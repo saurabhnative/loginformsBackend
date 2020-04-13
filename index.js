@@ -1,18 +1,15 @@
 var express = require("express");
-var login = require('./routes/loginroutes');
+var loginroutes = require('./routes/loginroutes');
 var bodyParser = require('body-parser');
-
+let cors = require('cors')
 // body parser added
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Allow cross origin requests
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+app.use(cors())
+
 var router = express.Router();
 
 // test route
@@ -22,7 +19,7 @@ router.get('/', function(req, res) {
 
 //route to handle user registration
 // router.post('/register',loginRoutes.register);
-// router.post('/login',loginRoutes.login);
+router.post('/login',loginroutes.login);
 
 app.use('/api', router);
 app.listen(4000);

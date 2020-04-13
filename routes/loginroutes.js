@@ -14,7 +14,11 @@ exports.register = function(req,res){
 }
 
 exports.login = function(req,res){
-  var userid= req.body.userid;
+  var email= req.body.email;
   var password = req.body.password;
-  console.log(userid, password);
+  console.log(email, password);
+  res.send({
+    "code":200,
+    "success":"login sucessfull"
+  })
 }
