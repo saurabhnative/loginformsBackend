@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 var express = require("express");
 var loginroutes = require('./routes/loginroutes');
 var bodyParser = require('body-parser');
@@ -18,7 +20,7 @@ router.get('/', function(req, res) {
 });
 
 //route to handle user registration
-// router.post('/register',loginRoutes.register);
+router.post('/register',loginroutes.register);
 router.post('/login',loginroutes.login);
 
 app.use('/api', router);
