@@ -12,6 +12,7 @@ connection.connect(function(err) {
     console.error('error connecting: ' + err.stack);
     return;
   }
+  // Uncomment below lines for first time to create a table in database
   // var sql = "CREATE TABLE users (email VARCHAR(255), password VARCHAR(255))";
   // connection.query(sql, function (err, result) {
   //   if (err) throw err;
