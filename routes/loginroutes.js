@@ -1,5 +1,7 @@
-var jsonfile = require('jsonfile');
 var mysql = require('mysql');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 var connection = mysql.createConnection({
   host     : process.env.DB_HOST,
   user     : process.env.DB_USER,
@@ -20,12 +22,15 @@ connection.connect(function(err) {
   // });
   console.log('connected as id ' + connection.threadId);
 });
-exports.register = function(req,res){
-  var today = new Date();
-   var users={
+exports.register = async function(req,res){
+  const password = req.body.password;
+  const encryptedPassword = await bcrypt.hash(password, saltRounds)
+
+  var users={
      "email":req.body.email,
-     "password":req.body.password
+     "password":encryptedPassword
    }
+  
   connection.query('INSERT INTO users SET ?',users, function (error, results, fields) {
     if (error) {
       res.send({
@@ -41,10 +46,10 @@ exports.register = function(req,res){
   });
 }
 
-exports.login = function(req,res){
+exports.login = async function(req,res){
   var email= req.body.email;
   var password = req.body.password;
-  connection.query('SELECT * FROM users WHERE email = ?',[email], function (error, results, fields) {
+  connection.query('SELECT * FROM users WHERE email = ?',[email], async function (error, results, fields) {
     if (error) {
       res.send({
         "code":400,
@@ -52,7 +57,8 @@ exports.login = function(req,res){
       })
     }else{
       if(results.length >0){
-        if(results[0].password == password){
+        const comparision = await bcrypt.compare(password, results[0].password)
+        if(comparision){
             res.send({
               "code":200,
               "success":"login sucessfull"
@@ -67,7 +73,7 @@ exports.login = function(req,res){
       }
       else{
         res.send({
-          "code":204,
+          "code":206,
           "success":"Email does not exits"
             });
       }
